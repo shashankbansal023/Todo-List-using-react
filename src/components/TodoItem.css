@@ -1,0 +1,26 @@
+.todoItem-container{
+    display:flex;
+    border:1px solid rgb(214, 203, 203);
+    width:50vw;
+    padding: 10px;
+    gap:10px;
+}
+
+.editTodoItem{
+    width:50%;
+    border:none;
+    outline:none;
+}
+
+.complete-btn{
+    margin-left:auto;
+}
+
+.todoText{
+    padding:10px 10px;
+}
+
+.todoTextStrike{
+    text-decoration :line-through;
+    padding:10px 10px;
+}

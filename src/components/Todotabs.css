@@ -1,0 +1,7 @@
+.todoTabsContainer{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    gap:40px;
+    padding: 10px 10px;
+}
