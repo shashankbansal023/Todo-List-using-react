@@ -2,18 +2,19 @@ import React from 'react';
 import  TodoItem from './TodoItem';
 import './TodoList.css'
 
-const TodoList = ({list,title , deleteItem=()=>{}, taskToggle=()=>{}, editItem=()=>{}}) =>{
+const TodoList = ({list=[], deleteItem=()=>{}, updatedTodo=()=>{}, editItem=()=>{}}) =>{
 
     return (
            
         <div className="todoListContainer">
-            <h1 className="todo-list-title">{title}</h1>
             <div className="todo-list">
                 {
+                    list.length ===0 ? <div>No tasks found</div>:
                      list.map((item, index)=>{
                         return (
-                           <TodoItem key={index+1} index={index} 
-                           item={item} taskToggle={taskToggle} 
+                           <TodoItem key={index+1} 
+                           item={item} 
+                           updatedTodo={updatedTodo} 
                            deleteItem={deleteItem} 
                            editItem={editItem}/>
                         )

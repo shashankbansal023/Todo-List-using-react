@@ -2,16 +2,16 @@ import React from 'react'
 import TodoList from './TodoList'
 
 const TodoTab = (props) => {
-    const {showList ,lists , deleteItem, editItem, taskToggle} = props;
-    const { toDoValues, completedTasks}= lists;
+
+  const {value, label, onTabClick, isActive} = props;
 
   return (
       <div>
-    {
-       !showList ? 
-        <TodoList title="Incomplete List" list={toDoValues} deleteItem={deleteItem} taskToggle={taskToggle} editItem={editItem}/>
-        : <TodoList title="Complete List" list={completedTasks} deleteItem={deleteItem} taskToggle={taskToggle} editItem={editItem}/>
-    }
+        <li className="nav-item">
+            <a className={isActive ? "nav-link active" : "nav-link"}
+               onClick={()=>onTabClick(value)} 
+             aria-current="page" href="#">{label}</a>
+        </li>
      </div>
   )
 }
