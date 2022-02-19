@@ -1,7 +1,8 @@
 
 const TODO_TABS = {
     TODO:'TODO',
-    COMPLETE :'COMPLETE'
+    COMPLETE :'COMPLETE',
+    ARCHIVED : 'ARCHIVED'
 }
 
 module.exports ={

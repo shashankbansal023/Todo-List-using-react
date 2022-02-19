@@ -1,4 +1,3 @@
-
 import React,{useState} from 'react';
 import './App.css';
 import TodoTabs from './components/TodoTabs'
@@ -22,11 +21,17 @@ const App=()=>{
         {
             label : TODO_TABS.COMPLETE,
             value : TODO_TABS.COMPLETE
+        },
+        {
+            label :TODO_TABS.ARCHIVED,
+            value : TODO_TABS.ARCHIVED
         }
     ]
 
-    const completeList = Object.values(todoList).filter(({isComplete}) => isComplete);
-    const incompleteList = Object.values(todoList).filter(({isComplete}) => !isComplete);
+    const completeList = Object.values(todoList).filter(({isComplete,isDelete,isArchived}) => isComplete && !isDelete && !isArchived);
+    const incompleteList = Object.values(todoList).filter(({isComplete,isDelete,isArchived}) => !isComplete && !isDelete && !isArchived);
+
+    const archivedList = Object.values(todoList).filter(({isArchived,isDelete})=> isArchived&&!isDelete);
 
     function onTabChange(value){
         setSelectedTab(value);
@@ -36,36 +41,19 @@ const App=()=>{
         e.preventDefault();
         const todoId = new Date().toISOString();
         setTodoList({...todoList,
-             [todoId]:{ id : todoId, value : inputText, isComplete: false} });
+             [todoId]:
+             { id : todoId,
+                 value : inputText,
+                  isComplete: false, 
+                  isDelete : false,
+                isArchived : false}});
         setInputText('');
     }
 
     
-    function deleteItem(itemIndex,value){
-
-        // let incompleteList = [...toDoValues];
-        // let completeList = [...completedTasks];
-
-        // if(incompleteList[itemIndex].value === value){
-        //     incompleteList = incompleteList.filter((_,index)=> index!==itemIndex);
-        //     setToDoValues(incompleteList);
-        //     return;
-        // }
-
-        // completeList = completeList.filter((_,index)=>index!==itemIndex);
-        // setCompletedTasks(completeList);
-    }
 
     function updateTodo(id,updatedItem){
         setTodoList({...todoList, [id]:updatedItem});
-    }
-
-
-    function editItem(itemIndex,itemValue){
-
-        // let array = [...toDoValues];
-        // array[itemIndex].value = itemValue;
-        // setToDoValues(array); 
     }
     
     return (
@@ -79,12 +67,17 @@ const App=()=>{
                 <TodoTabs tabs={tabs} selectedTab={selectedTab} onTabClick={onTabChange} />
             {
                 (selectedTab === TODO_TABS.TODO) && (
-                    <TodoList  list={incompleteList} deleteItem={deleteItem} editItem={editItem} updatedTodo={updateTodo}/>
+                    <TodoList  list={incompleteList} updatedTodo={updateTodo}/>
                 )
             }
             {
                 selectedTab===TODO_TABS.COMPLETE && (
-                    <TodoList list={completeList} deleteItem={deleteItem} editItem={editItem} updatedTodo={updateTodo}/>
+                    <TodoList list={completeList} updatedTodo={updateTodo}/>
+                )
+            }
+            {
+                selectedTab===TODO_TABS.ARCHIVED && (
+                    <TodoList list={archivedList} updatedTodo={updateTodo}/>
                 )
             }
             </div>

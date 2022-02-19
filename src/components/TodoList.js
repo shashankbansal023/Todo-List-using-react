@@ -2,10 +2,9 @@ import React from 'react';
 import  TodoItem from './TodoItem';
 import './TodoList.css'
 
-const TodoList = ({list=[], deleteItem=()=>{}, updatedTodo=()=>{}, editItem=()=>{}}) =>{
+const TodoList = ({list=[], updatedTodo=()=>{}}) =>{
 
-    return (
-           
+    return (       
         <div className="todoListContainer">
             <div className="todo-list">
                 {
@@ -15,8 +14,7 @@ const TodoList = ({list=[], deleteItem=()=>{}, updatedTodo=()=>{}, editItem=()=>
                            <TodoItem key={index+1} 
                            item={item} 
                            updatedTodo={updatedTodo} 
-                           deleteItem={deleteItem} 
-                           editItem={editItem}/>
+                           />
                         )
                     })
                 }
