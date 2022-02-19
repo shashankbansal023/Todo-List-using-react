@@ -1,66 +1,60 @@
-
 import React,{useState} from 'react';
 import './App.css';
 import TodoTabs from './components/TodoTabs'
+import * as globalConstants from './constants';
+import TodoList from './components/TodoList'
 
+
+const {TODO_TABS} = globalConstants;
 
 const App=()=>{
 
     const [inputText, setInputText] = useState('');
-    const [toDoValues,setToDoValues] = useState([]);
+    const [todoList,setTodoList] = useState({});
+    const [selectedTab, setSelectedTab] = useState(TODO_TABS.TODO);
 
-    const [completedTasks,setCompletedTasks] = useState([]);
+    const tabs =[
+        {
+            label : TODO_TABS.TODO,
+            value : TODO_TABS.TODO
+        },
+        {
+            label : TODO_TABS.COMPLETE,
+            value : TODO_TABS.COMPLETE
+        },
+        {
+            label :TODO_TABS.ARCHIVED,
+            value : TODO_TABS.ARCHIVED
+        }
+    ]
+
+    const completeList = Object.values(todoList).filter(({isComplete,isDelete,isArchived}) => isComplete && !isDelete && !isArchived);
+    const incompleteList = Object.values(todoList).filter(({isComplete,isDelete,isArchived}) => !isComplete && !isDelete && !isArchived);
+
+    const archivedList = Object.values(todoList).filter(({isArchived,isDelete})=> isArchived&&!isDelete);
+
+    function onTabChange(value){
+        setSelectedTab(value);
+    }
 
     function handleSubmit(e){
         e.preventDefault();
-        setToDoValues([...toDoValues,{value : inputText, taskCompleted: false}]);
+        const todoId = new Date().toISOString();
+        setTodoList({...todoList,
+             [todoId]:
+             { id : todoId,
+                 value : inputText,
+                  isComplete: false, 
+                  isDelete : false,
+                isArchived : false}});
         setInputText('');
     }
 
     
-    function deleteItem(itemIndex,value){
 
-        let incompleteList = [...toDoValues];
-        let completeList = [...completedTasks];
-
-        if(incompleteList[itemIndex].value === value){
-            incompleteList = incompleteList.filter((_,index)=> index!==itemIndex);
-            setToDoValues(incompleteList);
-            return;
-        }
-
-        completeList = completeList.filter((_,index)=>index!==itemIndex);
-        setCompletedTasks(completeList);
+    function updateTodo(id,updatedItem){
+        setTodoList({...todoList, [id]:updatedItem});
     }
-
-    function taskToggle(event,itemIndex){
-
-        if(event.target.textContent==="Done"){
-            let incompleteList = [...toDoValues];
-            incompleteList[itemIndex]["taskCompleted"]= !incompleteList[itemIndex]["taskCompleted"];
-            let completedTask=incompleteList.splice(itemIndex,1);
-            setToDoValues(incompleteList);
-            setCompletedTasks([...completedTasks,...completedTask]);
-            return;
-        }
-
-        let completeList = [...completedTasks];
-        completeList[itemIndex]["taskCompleted"] = !completeList[itemIndex]["taskCompleted"];
-        let incompleteTask = completeList.splice(itemIndex,1);
-        setToDoValues([...toDoValues,...incompleteTask]);
-        setCompletedTasks(completeList);
-       
-    }
-
-
-    function editItem(itemIndex,itemValue){
-
-        let array = [...toDoValues];
-        array[itemIndex].value = itemValue;
-        setToDoValues(array); 
-    }
-
-    const lists = {toDoValues, completedTasks};
     
     return (
         <div className="container"> 
@@ -70,9 +64,21 @@ const App=()=>{
                 <button className="btn btn-secondary" >Add Todo</button>
             </form>
             <div>
+                <TodoTabs tabs={tabs} selectedTab={selectedTab} onTabClick={onTabChange} />
             {
-                Boolean(toDoValues.length) && 
-                <TodoTabs lists={lists} taskToggle={taskToggle} deleteItem={deleteItem} editItem={editItem}/>
+                (selectedTab === TODO_TABS.TODO) && (
+                    <TodoList  list={incompleteList} updatedTodo={updateTodo}/>
+                )
+            }
+            {
+                selectedTab===TODO_TABS.COMPLETE && (
+                    <TodoList list={completeList} updatedTodo={updateTodo}/>
+                )
+            }
+            {
+                selectedTab===TODO_TABS.ARCHIVED && (
+                    <TodoList list={archivedList} updatedTodo={updateTodo}/>
+                )
             }
             </div>
         </div>
